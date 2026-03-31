@@ -1,4 +1,6 @@
+#include <iostream>
 #include "Logger.h"
+#include "Timestamp.h"
 
 Logger& Logger::instance()
 {
@@ -16,15 +18,19 @@ void Logger::log(std::string msg)
     switch(m_log_level)
     {
         case INFO:{
+            std::cout << "[INFO]";
             break;
         }
         case ERROR:{
+            std::cout << "[ERROR]";
             break;
         }
         case FATAL:{
+            std::cout << "[FATAL]";
             break;
         }
         case DEBUG:{
+            std::cout << "[DEBUG]";
             break;
         }
         default:{
@@ -32,4 +38,5 @@ void Logger::log(std::string msg)
         }
     }
     
+    std::cout << Timestamp::now().toString() << " : " << msg << std::endl;
 }
