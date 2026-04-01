@@ -21,7 +21,8 @@
     logger.setLogLevel(FATAL);               \
     char buffer[1024];                      \
     snprintf(buffer, 1024, LogmsgFormat, ##__VA_ARGS__);\
-    logger.log(buf);
+    logger.log(buf);    \
+    exit(-1);
 
 #ifdef DEBUG_MOD
 #define LOG_DEBUG(LogmsgFormat, ...)         \
