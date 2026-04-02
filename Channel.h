@@ -61,5 +61,5 @@ class Channel: noncopyable
         void    remove  (); // 所属的EventLoop中删除该Channel
     private:
         void    update  (); // 当改变Channel所表示fd的Events事件后，update负责在poller里面更改相应fd的事件
-        void    handleEventWithGuard    ();
+        void    handleEventWithGuard    (Timestamp reciveTime);
 };

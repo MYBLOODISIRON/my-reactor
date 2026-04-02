@@ -21,7 +21,7 @@ class Poller: noncopyable
         using ChannelList = std::vector<Channel*>;
 
         Poller  (EventLoop *loop);
-        virtual ~Poller ();
+        virtual ~Poller () = default;
 
         static  Poller*     newDefaultPoller(EventLoop *loop);   // 可能需要包含子类的头文件，所以不放在Poller.cc中
 

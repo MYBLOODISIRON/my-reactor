@@ -1,3 +1,5 @@
+#include <sys/epoll.h>
+
 #include "Channel.h"
 #include "Logger.h"
 
@@ -51,7 +53,7 @@ void Channel::handleEventWithGuard(Timestamp reciveTime)
         }
     }
 
-    if(revents & EPOLLERR)
+    if(m_revents & EPOLLERR)
     {
         if(m_errorCallback)
         {
@@ -59,11 +61,11 @@ void Channel::handleEventWithGuard(Timestamp reciveTime)
         }
     }
 
-    if(m_revents & (EPOLLINT | EPOLLPRI))
+    if(m_revents & (EPOLLIN | EPOLLPRI))
     {
         if(m_readCallback)
         {
-            m_readBallback();
+            m_readCallback();
         }
     }
 
@@ -97,7 +99,7 @@ void Channel::setErrorCallback(EventCallback cb)
     m_errorCallback = std::move(cb);
 }
 
-int Channel::fd()
+int Channel::fd() const
 {
     return m_fd;
 }

@@ -7,21 +7,21 @@
     logger.setLogLevel(INFO);               \
     char buffer[1024];                      \
     snprintf(buffer, 1024, LogmsgFormat, ##__VA_ARGS__);\
-    logger.log(buf);
+    logger.log(buffer);
 
 #define LOG_ERROR(LogmsgFormat, ...)         \
     Logger& logger {Logger::instance()};    \
-    logger.setLogLevel(ERROR               \
+    logger.setLogLevel(ERROR);               \
     char buffer[1024];                      \
     snprintf(buffer, 1024, LogmsgFormat, ##__VA_ARGS__);\
-    logger.log(buf);
+    logger.log(buffer);
 
 #define LOG_FATAL(LogmsgFormat, ...)         \
     Logger& logger {Logger::instance()};    \
     logger.setLogLevel(FATAL);               \
     char buffer[1024];                      \
     snprintf(buffer, 1024, LogmsgFormat, ##__VA_ARGS__);\
-    logger.log(buf);    \
+    logger.log(buffer);    \
     exit(-1);
 
 #ifdef DEBUG_MOD
@@ -30,7 +30,7 @@
     logger.setLogLevel(DEBUG);               \
     char buffer[1024];                      \
     snprintf(buffer, 1024, LogmsgFormat, ##__VA_ARGS__);\
-    logger.log(buf);
+    logger.log(buffer);
 #endif
 
 enum LogLevel
