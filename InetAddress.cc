@@ -2,7 +2,7 @@
 #include <strings.h>
 #include <string.h>
 
-InetAddress::InetAddress(uint16_t port, const std::string& ip = "127.0.0.1")
+InetAddress::InetAddress(uint16_t port, const std::string& ip)
 {
     bzero(&m_addr, sizeof(m_addr));
     m_addr.sin_family = AF_INET;
@@ -37,4 +37,16 @@ uint16_t InetAddress::toPort() const
 void InetAddress::setSockAddr(const struct sockaddr_in& addr)
 {
     m_addr = addr;
+}
+
+
+InetAddress::InetAddress(const sockaddr_in& addr)
+{
+    m_addr = addr;
+}
+
+
+const sockaddr_in* InetAddress::getSockAddr() const
+{
+    return &m_addr;
 }

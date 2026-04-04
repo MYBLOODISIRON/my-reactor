@@ -8,7 +8,7 @@ class InetAddress
     private:
         struct sockaddr_in m_addr;
     public:
-        explicit InetAddress(uint16_t port, const std::string& ip);
+        explicit InetAddress(uint16_t port = 0, const std::string& ip = "127.0.0.1");
         explicit InetAddress(const sockaddr_in& addr);
         std::string toIp() const;
         std::string toIpPort() const;
