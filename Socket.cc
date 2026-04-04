@@ -4,6 +4,7 @@
 #include <netinet/in.h>
 #include <sys/types.h>
 #include <string.h>
+#include <netinet/tcp.h>
 
 #include "Socket.h"
 #include "Logger.h"
@@ -78,18 +79,18 @@ void Socket::setTcpNoDelay(bool on)
 void Socket::setReuseAddr(bool on)
 {
     int optval {on ? 1 : 0};
-    ::setsockopt(m_sockfd, SQL_SOCKET, SO_REUSEADDR, &optval, sizeof optval);
+    ::setsockopt(m_sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof optval);
 }
 
 void Socket::setReusePort(bool on)
 {
     int optval {on ? 1 : 0};
 
-    ::setsockopt(m_sockfd, SQL_SOCKET, SO_REUSEPORT, &optval, sizeof optval);
+    ::setsockopt(m_sockfd, SOL_SOCKET, SO_REUSEPORT, &optval, sizeof optval);
 }
 
 void Socket::setKeepAlive(bool on)
 {
     int optval {on ? 1 : 0};
-    ::setsockopt(m_sockfd, SQL_SOCKET, SO_KEEPALIVE, &optval, sizeof optval);
+    ::setsockopt(m_sockfd, SOL_SOCKET, SO_KEEPALIVE, &optval, sizeof optval);
 }
