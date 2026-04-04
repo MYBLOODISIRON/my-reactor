@@ -14,4 +14,5 @@ class InetAddress
         std::string toIpPort() const;
         uint16_t toPort() const;
         const sockaddr_in* getSockAddr() const;
+        void    setSockAddr(const struct sockaddr_in& addr);
 };

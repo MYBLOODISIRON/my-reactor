@@ -32,3 +32,9 @@ uint16_t InetAddress::toPort() const
 {
     return ntohs(m_addr.sin_port);
 }
+
+
+void InetAddress::setSockAddr(const struct sockaddr_in& addr)
+{
+    m_addr = addr;
+}
