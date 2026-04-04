@@ -34,10 +34,10 @@ class TcpServer: noncopyable
 
         ThreadInitCallback  m_threadInitCallback;   // 线程初始化回调
         std::atomic_int     m_started;
-        int     m_nextConnId;
+        int                 m_nextConnId;
         ConnectionMap       m_connections;
     public:
-        TcpServer   (EventLoop *loop, const InetAddress& listenAddr, Option option = kNoReusePort);
+        TcpServer   (EventLoop *loop, const InetAddress& listenAddr, const std::string& nameArg, Option option = kNoReusePort);
         ~TcpServer  ();
 
         void    setThreadInitCallback   (const ThreadInitCallback& cb);
@@ -45,7 +45,7 @@ class TcpServer: noncopyable
         void    setMessageCallback      (const MessageCallback& cb);
         void    setWriteCompleteCallback    (const WriteCompleteCallback& cb);
 
-        void    setthreadNum            (int numThreads);
+        void    setThreadNum            (int numThreads);
         void    start                   (); // 开启服务器监听
 
     private:
