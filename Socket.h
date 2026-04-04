@@ -23,7 +23,7 @@ class Socket
         void    shutdownWrite   ();
 
         void    setTcpNoDelay   (bool on);
-        void    setResultAddr   (bool on);
+        void    setReuseAddr   (bool on);
         void    setReusePort    (bool on);
         void    setKeepAlive    (bool on);
 };

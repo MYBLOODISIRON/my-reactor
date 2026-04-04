@@ -75,7 +75,7 @@ void Socket::setTcpNoDelay(bool on)
 }
 
 
-void Socket::setResultAddr(bool on)
+void Socket::setReuseAddr(bool on)
 {
     int optval {on ? 1 : 0};
     ::setsockopt(m_sockfd, SQL_SOCKET, SO_REUSEADDR, &optval, sizeof optval);
