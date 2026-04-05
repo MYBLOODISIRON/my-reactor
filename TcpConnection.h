@@ -61,6 +61,7 @@ class TcpConnection: noncopyable, public std::enable_shared_from_this< TcpConnec
         void setMessageCallback     (const MessageCallback& cb);
         void setWriteCompleteCallback   (const WriteCompleteCallback& cb);
         void setHighWaterMarkCallback   (const HighWaterMarkCallback& cb);
+        void setCloseCallback           (const CloseCallback& cb);
 
         void connectEstablished ();
         void connectDestroyed   ();

@@ -66,7 +66,11 @@ void TcpConnection::send(const void* message, int len)
 
 void TcpConnection::shutdown()
 {
-
+    if(m_state == kConnected)
+    {
+        setState(kDisconnecting);
+        m_loop->runInLoop(std::bind(&TcpConnection::shutdownInLoop, this));
+    }
 }
 
 void TcpConnection::setConnectionCallback(const ConnectionCallback& cb)
@@ -89,14 +93,28 @@ void TcpConnection::setHighWaterMarkCallback(const HighWaterMarkCallback& cb)
     m_highWaterMarkCallback = cb;
 }
 
-void TcpConnection::connectEstablished()
+void TcpConnection::setCloseCallback(const CloseCallback& cb)
 {
+    m_closeCallback = cb;
+}
 
+void TcpConnection::connectEstablished()    // 建立连接
+{
+    setState(kConnecting);
+    m_channel->tie(shared_from_this());
+    m_channel->enableReading();
+    m_connectionCallback(shared_from_this());
 }
 
 void TcpConnection::connectDestroyed()
 {
-
+    if(m_state == kConnected)
+    {
+        setState(kDisconnected);
+        m_channel->disableAll();
+        m_connectionCallback(shared_from_this());
+    }
+    m_channel->remove();
 }
 
 void TcpConnection::handleWrite()
@@ -231,7 +249,10 @@ void TcpConnection::sendInLoop(const void* message, size_t len)
 
 void TcpConnection::shutdownInLoop()
 {
-
+    if(! m_channel->isWriting())    // outputBuffer数据全部发送完成
+    {
+        m_socket->shutdownWrite();
+    }
 }
 
 void TcpConnection::setState(StateE state)
