@@ -29,6 +29,7 @@ class Buffer    // 网络缓冲区
         char*       beginWrite          ();
         const char* beginWrite          () const;
         ssize_t     readFd              (int fd, int* saveErrno);   // 从fd上读取数据
+        ssize_t     writeFd             (int fd, int* saveErrno);
     private:
         const char* begin   ();
         void        makeSpace   (size_t len);
