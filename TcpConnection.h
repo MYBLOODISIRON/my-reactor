@@ -65,6 +65,7 @@ class TcpConnection: noncopyable, public std::enable_shared_from_this< TcpConnec
         void connectEstablished ();
         void connectDestroyed   ();
         void setState           (StateE state);
+        void send               (const std::string& buf);
 
     private:
         void handleWrite    ();

@@ -1,4 +1,5 @@
 #include <functional>
+#include <string>
 #include <sys/socket.h>
 #include <errno.h>
 #include "TcpConnection.h"
@@ -180,7 +181,52 @@ void TcpConnection::handleError()
 
 void TcpConnection::sendInLoop(const void* message, size_t len)
 {
+    ssize_t nwrote {0};
+    size_t remaining {len};
+    bool faultError {false};
+    if(m_state == kDisconnected)    // 已调用shutdown
+    {
+        LOG_ERROR("disconnected, give up writing.\n");
+        return ;
+    }
+    if(! m_channel->isWriting() && m_outputBuffer.readableBytes() == 0) // channel第一次发送数据，且缓冲区没有数据
+    {
+        nwrote = ::write(m_channel->fd(), message, len);
+        if(nwrote >= 0)
+        {
+            remaining = len - nwrote;
+            if(remaining == 0 && m_writeCompleteCallback)
+            {
+                m_loop->queueInLoop(std::bind(m_writeCompleteCallback, shared_from_this()));
+            }
+        }
+        else
+        {
+            nwrote = 0;
+            if(errno != EWOULDBLOCK)
+            {
+                LOG_ERROR("TcpConnection::sendInLoop.\n");
+                if(errno == EPIPE || errno == ECONNRESET)
+                {
+                    faultError = true;
+                }
+            }
+        }
+    }
+    if(! faultError && remaining > 0)   // 数据未全部发送
+    {
+        size_t oldLen {m_outputBuffer.readableBytes()};
+        if((oldLen + remaining) >= m_highWaterMark && oldLen < m_highWaterMark && m_highWaterMarkCallback)
+        {
+            m_loop->queueInLoop(std::bind(m_highWaterMarkCallback, shared_from_this(), oldLen + remaining));
 
+        }
+        m_outputBuffer.append((char*)message + nwrote, remaining);
+        if(!m_channel->isWriting())
+        {
+            m_channel->enableWriting();
+        }
+    }
 }
 
 void TcpConnection::shutdownInLoop()
@@ -192,3 +238,19 @@ void TcpConnection::setState(StateE state)
 {
     m_state = state;
 }
+
+void TcpConnection::send(const std::string& buf)
+{
+    if(m_state == kConnected)
+    {
+        if(m_loop->isInLoopThread())
+        {
+            sendInLoop(buf.c_str(), buf.size());
+        }
+        else
+        {
+            m_loop->runInLoop(std::bind(&TcpConnection::sendInLoop, this, buf.c_str(), buf.size()));
+        }
+    }
+}
+
