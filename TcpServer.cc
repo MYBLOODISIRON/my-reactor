@@ -21,7 +21,8 @@ TcpServer::TcpServer(EventLoop* loop, const InetAddress& listenAddr, const std::
     m_threadPool    {new EventLoopThreadPool {loop, nameArg}},
     m_connectionCallback    {},
     m_messageCallback       {},
-    m_nextConnId            {1}
+    m_nextConnId            {1},
+    m_started               {0}
 {
     m_acceptor->setNewConnectionCallback(std::bind(&TcpServer::newConnection, this, std::placeholders::_1, std::placeholders::_2)); // 用户连接时，会执行TcpServer::newConnection回调
 }

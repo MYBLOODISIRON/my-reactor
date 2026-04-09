@@ -51,7 +51,7 @@ int Socket::accept(InetAddress* peerAddr)
     bzero(&addr, sizeof addr);
     socklen_t len {sizeof addr};
 
-    int connfd = ::accept(m_sockfd, (sockaddr*) &addr, &len);
+    int connfd = ::accept4(m_sockfd, (sockaddr*) &addr, &len, SOCK_NONBLOCK | SOCK_CLOEXEC);
     if(connfd >= 0)
     {
         peerAddr->setSockAddr(addr);
