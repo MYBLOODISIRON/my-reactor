@@ -3,6 +3,7 @@
 #include <functional>
 #include <thread>
 #include <unistd.h>
+#include <pthread.h>
 #include <atomic>
 #include <memory>
 #include <string>
@@ -13,7 +14,7 @@
 class Thread: noncopyable
 {
 
-    using ThreadFunc = std::function<void()>;
+    using ThreadFunc = std::function< void() >;
 
     private:
 
@@ -22,7 +23,7 @@ class Thread: noncopyable
         bool        m_started   {false};
         bool        m_joined    {false};
         std::thread m_thread;
-        pid_t       m_tid       {0};
+        pthread_t   m_tid       {0};
         ThreadFunc  m_func;
         std::string m_name;
 
@@ -30,8 +31,8 @@ class Thread: noncopyable
 
         static int32_t  numCreated  ();
 
-        explicit    Thread  (ThreadFunc func, const std::string& name = std::string());
-        ~Thread     ();
+        Thread  (ThreadFunc func, const std::string& name = std::string());
+        ~Thread ();
 
         void    start   ();
         void    join    ();

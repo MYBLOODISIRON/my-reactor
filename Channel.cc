@@ -2,6 +2,7 @@
 
 #include "Channel.h"
 #include "Logger.h"
+#include "EventLoop.h"
 
 
 Channel::Channel(EventLoop* loop, int fd)
@@ -18,11 +19,12 @@ void Channel::tie(const std::shared_ptr<void>& obj)
 
 void Channel::update()
 {
-
+    m_loop->updateChannel(this);
 }
 
 void Channel::remove()
 {
+    m_loop->removeChannel(this);
 }
 
 
@@ -65,7 +67,7 @@ void Channel::handleEventWithGuard(Timestamp reciveTime)
     {
         if(m_readCallback)
         {
-            m_readCallback();
+            m_readCallback(reciveTime);
         }
     }
 

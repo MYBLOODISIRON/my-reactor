@@ -1,19 +1,18 @@
 #pragma once
+#include <pthread.h>
+
 
 
 namespace CurrentThread
 {
-    extern __thread int t_cachedTid;
-
-    void cachedTid();
-
-    inline int tid()
+    extern __thread pthread_t cachedTid;
+    void    cacheTid    ();
+    inline  pthread_t   tid ()
     {
-        if(__builtin_expect(t_cachedTid == 0, 0))
+        if(cachedTid == 0)
         {
-            cachedTid();
+            cacheTid();
         }
-
-        return t_cachedTid;
-    }
+        return cachedTid;
+    }   
 }

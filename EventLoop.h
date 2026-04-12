@@ -1,27 +1,24 @@
 #pragma once
-
 #include <vector>
 #include <functional>
 #include <atomic>
 #include <memory>
 #include <mutex>
-
 #include "noncopyable.h"
 #include "Timestamp.h"
-
 class Channel;
 class Poller;
 
 
 class EventLoop
 {
-    using Functor = std::function<void()>;
-    using ChannelList = std::vector<Channel*>;
+    using Functor = std::function< void() >;
+    using ChannelList = std::vector< Channel* >;
 
     private:
 
-        std::atomic_bool    m_looping;
-        std::atomic_bool    m_quit;     // 标志推出循环
+        std::atomic_bool    m_looping   {false};
+        std::atomic_bool    m_quit      {false};     // 标志推出循环
         const   pid_t       m_threadId;     // loop所在的线程
         Timestamp           m_pollReturnTime;
         std::unique_ptr<Poller> m_poller;
@@ -30,9 +27,9 @@ class EventLoop
         std::unique_ptr<Channel>    m_wakeupChannel;
 
         ChannelList m_activeChannels;
-        Channel*    m_currentActiveChannel;
+        Channel*    m_currentActiveChannel  {nullptr};
 
-        std::atomic_bool        m_callingPendingFunctor;    // 标识当前loop是否有需要执行的回调
+        std::atomic_bool        m_callingPendingFunctor {false};    // 标识当前loop是否有需要执行的回调
         std::vector<Functor>    m_pendingFunctors;
         std::mutex              m_mutex;    // 保护m_pendingFunctors操作
 

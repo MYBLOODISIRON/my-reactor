@@ -2,7 +2,7 @@
 #include "Channel.h"
 
 Poller::Poller(EventLoop *loop)
-:m_ownerLoop {loop}
+:   m_ownerLoop {loop}
 {
 
 }

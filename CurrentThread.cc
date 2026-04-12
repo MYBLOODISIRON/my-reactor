@@ -1,17 +1,12 @@
-#include <unistd.h>
-#include <sys/syscall.h>
-
 #include "CurrentThread.h"
 
 namespace CurrentThread
 {
-    __thread int t_cachedTid {0};
+    __thread pthread_t cachedTid {0};
 
-    void cachedTid()
+
+    void cacheTid()
     {
-        if(t_cachedTid == 0)
-        {
-            t_cachedTid = static_cast<pid_t>    (syscall(SYS_gettid));
-        }
+        cachedTid = pthread_self();
     }
 }

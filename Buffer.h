@@ -9,8 +9,8 @@ class Buffer    // 网络缓冲区
         static const size_t sm_kInitialSize     {1024};
     private:
         std::vector< char > m_buffer;
-        size_t              m_readIndex;
-        size_t              m_writeIndex;
+        size_t              m_readIndex {sm_kCheapPrepend};
+        size_t              m_writeIndex{sm_kCheapPrepend};
     public:
 
         explicit    Buffer  (size_t initialSize = sm_kInitialSize);
@@ -26,11 +26,10 @@ class Buffer    // 网络缓冲区
         std::string retrieveAsString    (size_t len);
         void        ensureWritableBytes (size_t len);
         void        append              (const char* data, size_t len);
-        char*       beginWrite          ();
         const char* beginWrite          () const;
         ssize_t     readFd              (int fd, int* saveErrno);   // 从fd上读取数据
         ssize_t     writeFd             (int fd, int* saveErrno);
     private:
-        const char* begin   ();
+        const char* begin   () const;
         void        makeSpace   (size_t len);
 };

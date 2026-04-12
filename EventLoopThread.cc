@@ -1,5 +1,4 @@
 #include <memory>
-
 #include "EventLoopThread.h"
 #include "EventLoop.h"
 

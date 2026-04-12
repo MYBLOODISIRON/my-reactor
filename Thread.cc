@@ -45,10 +45,10 @@ void Thread::start()
 
 void Thread::join()
 {
-    m_joined = true;
     if(m_thread.joinable())
     {
         m_thread.join();
+        m_joined = true;
     }
 }
 

@@ -1,20 +1,20 @@
 #pragma once
-
 #include <vector>
 #include <sys/epoll.h>
-
 #include "Poller.h"
-
 class Channel;
+class Timestamp;
+
 
 class EPoller: public Poller
 {
-    private:
-        using EventList = std::vector<epoll_event>;
 
-        static const int    kInitEventListSize {16};
-        int         m_epollfd;
-        EventList   m_events;
+    using EventList = std::vector< struct epoll_event >;
+    private:
+
+        static const int    sm_kInitEventListSize {16};
+        int                 m_epollfd;
+        EventList           m_events    {sm_kInitEventListSize};
 
     public:
         EPoller     (EventLoop *loop);
@@ -26,5 +26,5 @@ class EPoller: public Poller
 
     private:
         void    fillActiveChannels  (int numEvents, ChannelList *activeChannels) const;
-        void    update  (int operation, Channel *channel);
+        void    update              (int operation, Channel *channel);
 };

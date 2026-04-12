@@ -13,7 +13,8 @@ const int kAdded    {1};
 const int kDeleted  {2};
 
 EPoller::EPoller(EventLoop *loop)
-: Poller(loop), m_epollfd {epoll_create1(EPOLL_CLOEXEC)}, m_events {kInitEventListSize}
+:   Poller(loop), 
+    m_epollfd   {epoll_create1(EPOLL_CLOEXEC)} 
 {
     if(m_epollfd < 0)
     {
@@ -28,7 +29,8 @@ EPoller::~EPoller()
 
 Timestamp EPoller::poll(int timeoutms, ChannelList *activeChannels)
 {
-    int numEvents {epoll_wait(m_epollfd, m_events.data(), static_cast<int>(m_events.size()), timeoutms)};
+    int numEvents {0};
+    numEvents = epoll_wait(m_epollfd, m_events.data(), static_cast<int>(m_events.size()), timeoutms);
     int error_num {errno};
     Timestamp time_now {Timestamp::now()};
     if(numEvents > 0)

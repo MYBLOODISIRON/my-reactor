@@ -8,12 +8,12 @@ Logger& Logger::instance()
     return logger;
 }
 
-void Logger::setLogLevel(int level)
+void Logger::setLogLevel(LogLevel level)
 {
     m_log_level= level;
 }
 
-void Logger::log(std::string msg)
+void Logger::log(const std::string& msg)
 {
     switch(m_log_level)
     {

@@ -44,11 +44,13 @@ enum LogLevel
 class Logger: noncopyable
 {
     private:
-        int m_log_level;
+
+        LogLevel    m_log_level;
+
     public:
         static Logger& instance();
-        void setLogLevel(int level);
-        void log(std::string msg);
+        void setLogLevel(LogLevel level);
+        void log(const std::string& msg);
     private:
-        Logger() = default;
+        Logger() = default; // 外界不可构造Logger类
 };

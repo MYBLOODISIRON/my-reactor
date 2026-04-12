@@ -1,6 +1,4 @@
-
 #include <memory>
-
 #include "EventLoopThreadPool.h"
 #include "EventLoopThread.h"
 
@@ -8,12 +6,6 @@
 EventLoopThreadPool::EventLoopThreadPool(EventLoop *baseLoop, const std::string &nameArg)
 :   m_baseLoop  {baseLoop},
     m_name      {nameArg}
-{
-
-}
-
-
-EventLoopThreadPool::~EventLoopThreadPool()
 {
 
 }

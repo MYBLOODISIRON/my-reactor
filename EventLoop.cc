@@ -12,7 +12,7 @@
 #include "CurrentThread.h"
 #include "Poller.h"
 
-__thread EventLoop *t_loopInThread = nullptr; // 防止一个线程创建多个EventLoop
+__thread EventLoop *loopInThread = nullptr; // 防止一个线程创建多个EventLoop
 
 const int kPollTimeMs = 10000; // 默认超时时间
 
@@ -30,15 +30,18 @@ int createEventfd()
 
 
 EventLoop::EventLoop()
-: m_looping {false}, m_quit {false}, m_callingPendingFunctor {false}, m_threadId {CurrentThread::tid()}, m_poller {Poller::newDefaultPoller(this)}, m_wakeupFd {createEventfd()}, m_wakeupChannel {new Channel {this, m_wakeupFd}}, m_currentActiveChannel {nullptr}
+:   m_threadId  {CurrentThread::tid()}, 
+    m_poller    {Poller::newDefaultPoller(this)}, 
+    m_wakeupFd  {createEventfd()}, 
+    m_wakeupChannel {new Channel {this, m_wakeupFd}}
 {
-    if(t_loopInThread)
+    if(loopInThread)
     {
-        LOG_FATAL("Another EventLoop %p is exist in this thread %d\n", t_loopInThread, m_threadId);
+        LOG_FATAL("Another EventLoop %p is exist in this thread %d\n", loopInThread, m_threadId);
     }
     else
     {
-        t_loopInThread = this;
+        loopInThread = this;
     }
 
     // 设置wakeupfd的事件类型及其发生后的回调
@@ -51,7 +54,7 @@ EventLoop::~EventLoop()
     m_wakeupChannel->disableAll();
     m_wakeupChannel->remove();
     close(m_wakeupFd);
-    t_loopInThread = nullptr;
+    loopInThread = nullptr;
 }
 
 
@@ -59,7 +62,7 @@ void EventLoop::handleRead()
 {
     uint64_t one = 1;
     ssize_t n = read(m_wakeupFd, &one, sizeof(one));
-    if(n != 64)
+    if(n != 8)
     {
         LOG_ERROR("EventLoop::handleRead() reads %d bytes instead of 8\n", n);
     }

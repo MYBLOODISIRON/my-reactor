@@ -5,12 +5,15 @@
 #include <memory>
 #include "noncopyable.h"
 #include "Timestamp.h"
-
 class EventLoop; // 前置声明
 
 
 class Channel: noncopyable
 {
+
+    using EventCallback     = std::function<void()>;
+    using ReadEventCallback = std::function<void(Timestamp)>;
+
     private:
         static const int sm_kNoneEvent  {0};
         static const int sm_kReadEvent  {EPOLLIN | EPOLLPRI};
@@ -18,9 +21,9 @@ class Channel: noncopyable
 
         EventLoop   *m_loop; // 事件循环
         const int   m_fd;   // 监听对象
-        int         m_events;
-        int         m_revents;
-        int         m_index;
+        int         m_events    {0};
+        int         m_revents   {0};
+        int         m_index     {-1};
 
         std::weak_ptr<void>     m_tie;
         bool                    m_tied;
@@ -30,8 +33,6 @@ class Channel: noncopyable
         EventCallback           m_closeCallback;
         EventCallback           m_errorCallback;
     public:
-        using EventCallback     = std::function<void()>;
-        using ReadEventCallback = std::function<void(Timestamp)>;
 
         Channel     (EventLoop* loop, int fd);
         ~Channel    () = default;

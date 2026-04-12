@@ -1,18 +1,15 @@
 #pragma once
-
 #include <functional>
 #include <memory>
 #include <string>
 #include <vector>
-
 #include "noncopyable.h"
-
 class EventLoopThread;
 class EventLoop;
 
 class EventLoopThreadPool: noncopyable
 {
-    using ThreadInitCallback = std::function<void(EventLoop*)>;
+    using ThreadInitCallback = std::function< void(EventLoop*) >;
 
     private:
 

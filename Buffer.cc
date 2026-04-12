@@ -5,12 +5,11 @@
 #include "Buffer.h"
 
 Buffer::Buffer(size_t initialSize)
-:   m_buffer    {sm_kCheapPrepend + initialSize},
-    m_readIndex {sm_kCheapPrepend},
-    m_writeIndex    {sm_kCheapPrepend}
+:   m_buffer    (sm_kCheapPrepend + initialSize)
 {
 
 }
+
 
 size_t Buffer::readableBytes() const
 {
@@ -27,7 +26,7 @@ size_t Buffer::prependableBytes() const
     return m_readIndex;
 }
 
-const char* Buffer::begin()
+const char* Buffer::begin() const
 {
     return m_buffer.data();
 }
@@ -56,12 +55,12 @@ void Buffer::retrieveAll()
     m_readIndex = m_writeIndex = sm_kCheapPrepend;
 }
 
-std::string retrieveAllAsString()
+std::string Buffer::retrieveAllAsString()
 {
     return retrieveAsString(readableBytes());
 }
 
-std::string retrieveAsString(size_t len)
+std::string Buffer::retrieveAsString(size_t len)
 {
     std::string result {peek(), len};
     retrieve(len);
@@ -91,10 +90,6 @@ void Buffer::makeSpace(size_t len)
     }
 }
 
-char* Buffer::beginWrite()
-{
-    return begin() + m_writeIndex;
-}
 
 const char* Buffer::beginWrite() const
 {
@@ -113,7 +108,7 @@ ssize_t Buffer::readFd(int fd, int* saveErrno)
     char extrabuf [65535];
     struct iovec vec [2];
     const size_t writable = writableBytes();
-    vec[0].iov_base = begin() + m_writeIndex;
+    vec[0].iov_base = (void*) (begin() + m_writeIndex);
     vec[1].iov_base = extrabuf;
     vec[0].iov_len = writable;
     vec[1].iov_len = sizeof extrabuf;

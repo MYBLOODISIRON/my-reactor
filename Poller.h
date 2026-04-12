@@ -1,24 +1,24 @@
 #pragma once
-
 #include <vector>
-
 #include "noncopyable.h"
-
 class Channel;
 
 
 
 class Poller: noncopyable
 {
-    private:
-        EventLoop*  m_ownerLoop;
     protected:
-        using ChannelMap = std::unordered_map<int, Channel*>;
+        using ChannelMap = std::unordered_map < int, Channel* >;
+        using ChannelList = std::vector < Channel* >;
+
+    private:
+
+        EventLoop*  m_ownerLoop;
+
+    protected:
         ChannelMap  m_channels;
 
-
     public:
-        using ChannelList = std::vector<Channel*>;
 
         Poller  (EventLoop *loop);
         virtual ~Poller () = default;
