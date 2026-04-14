@@ -9,9 +9,9 @@
 #include "Channel.h"
 
 TcpConnection::TcpConnection(EventLoop* loop, const std::string& name, int sockfd, const InetAddress& localAddr, const InetAddress& peerAddr)
-:   m_loop  {},
+:   m_loop  {loop},
     m_name  {name},
-    m_state {kConnecting},
+    m_state {Connecting},
     m_reading   {true},
     m_socket    {new Socket {sockfd}},
     m_channel   {new Channel {loop, sockfd}},
@@ -56,19 +56,15 @@ const InetAddress& TcpConnection::peerAddress() const
 
 bool TcpConnection::connected() const
 {
-    return m_state == kConnected;
+    return m_state == Connected;
 }
 
-void TcpConnection::send(const void* message, int len)
-{
-
-}
 
 void TcpConnection::shutdown()
 {
-    if(m_state == kConnected)
+    if(m_state == Connected)
     {
-        setState(kDisconnecting);
+        setState(Disconnecting);
         m_loop->runInLoop(std::bind(&TcpConnection::shutdownInLoop, this));
     }
 }
@@ -100,7 +96,7 @@ void TcpConnection::setCloseCallback(const CloseCallback& cb)
 
 void TcpConnection::connectEstablished()    // 建立连接
 {
-    setState(kConnecting);
+    setState(Connecting);
     m_channel->tie(shared_from_this());
     m_channel->enableReading();
     m_connectionCallback(shared_from_this());
@@ -108,11 +104,11 @@ void TcpConnection::connectEstablished()    // 建立连接
 
 void TcpConnection::connectDestroyed()
 {
-    if(m_state == kConnected)
+    if(m_state == Connected)
     {
-        setState(kDisconnected);
+        setState(Disconnected);
         m_channel->disableAll();
-        m_connectionCallback(shared_from_this());
+        m_closeCallback(shared_from_this());
     }
     m_channel->remove();
 }
@@ -133,7 +129,7 @@ void TcpConnection::handleWrite()
                 {
                     m_loop->queueInLoop(std::bind(m_writeCompleteCallback, shared_from_this()));
                 }
-                if(m_state == kDisconnecting)
+                if(m_state == Disconnecting)
                 {
                     shutdownInLoop();
                 }
@@ -173,7 +169,7 @@ void TcpConnection::handleRead(Timestamp recieveTime)
 void TcpConnection::handleClose()
 {
     LOG_INFO("fd = %d state = %d.\n", m_channel->fd(), m_state);
-    setState(kDisconnected);
+    setState(Disconnected);
     m_channel->disableAll();
 
     TcpConnectionPtr connPtr {shared_from_this()};
@@ -202,7 +198,7 @@ void TcpConnection::sendInLoop(const void* message, size_t len)
     ssize_t nwrote {0};
     size_t remaining {len};
     bool faultError {false};
-    if(m_state == kDisconnected)    // 已调用shutdown
+    if(m_state == Disconnected)    // 已调用shutdown
     {
         LOG_ERROR("disconnected, give up writing.\n");
         return ;
@@ -249,20 +245,20 @@ void TcpConnection::sendInLoop(const void* message, size_t len)
 
 void TcpConnection::shutdownInLoop()
 {
-    if(! m_channel->isWriting())    // outputBuffer数据全部发送完成
+    if(! m_channel->isWriting())  // outputBuffer数据全部发送完成
     {
         m_socket->shutdownWrite();
     }
 }
 
-void TcpConnection::setState(StateE state)
+void TcpConnection::setState(ConnectionState state)
 {
     m_state = state;
 }
 
 void TcpConnection::send(const std::string& buf)
 {
-    if(m_state == kConnected)
+    if(m_state == Connected)
     {
         if(m_loop->isInLoopThread())
         {
@@ -274,4 +270,3 @@ void TcpConnection::send(const std::string& buf)
         }
     }
 }
-

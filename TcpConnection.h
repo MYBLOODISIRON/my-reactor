@@ -11,18 +11,19 @@ class Channel;
 class EventLoop;
 class Socket;
 
+
 class TcpConnection: noncopyable, public std::enable_shared_from_this< TcpConnection >
 {
-    enum StateE
+    enum ConnectionState
     {
-        kDisconnected,
-        kConnecting,
-        kConnected,
-        kDisconnecting
+        Connecting,
+        Connected,
+        Disconnecting,
+        Disconnected
     };
 
     private:
-        EventLoop   *m_loop;
+        EventLoop   *m_loop {nullptr};
         const   std::string     m_name;
         std::atomic_int         m_state;
         bool                    m_reading;
@@ -33,8 +34,8 @@ class TcpConnection: noncopyable, public std::enable_shared_from_this< TcpConnec
         const   InetAddress     m_localAddr;
         const   InetAddress     m_peerAddr;
 
-        ConnectionCallback  m_connectionCallback;
-        MessageCallback     m_messageCallback;
+        ConnectionCallback      m_connectionCallback;
+        MessageCallback         m_messageCallback;
         WriteCompleteCallback   m_writeCompleteCallback;
         HighWaterMarkCallback   m_highWaterMarkCallback;
         CloseCallback           m_closeCallback;
@@ -65,7 +66,7 @@ class TcpConnection: noncopyable, public std::enable_shared_from_this< TcpConnec
 
         void connectEstablished ();
         void connectDestroyed   ();
-        void setState           (StateE state);
+        void setState           (ConnectionState state);
         void send               (const std::string& buf);
 
     private:

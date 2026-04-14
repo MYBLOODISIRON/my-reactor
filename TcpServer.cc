@@ -95,7 +95,6 @@ void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr)  // æ–°å®
     TcpConnectionPtr conn {new TcpConnection {ioLoop, connName, sockfd, localAddr, peerAddr}};
 
     m_connections [connName] = conn;
-    conn->setConnectionCallback(m_connectionCallback);
 
     conn->setConnectionCallback(m_connectionCallback);
     conn->setMessageCallback(m_messageCallback);
