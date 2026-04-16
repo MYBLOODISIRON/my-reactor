@@ -1,4 +1,5 @@
 #include <functional>
+#include <any>
 #include <string>
 #include <sys/socket.h>
 #include <errno.h>
@@ -269,4 +270,16 @@ void TcpConnection::send(const std::string& buf)
             m_loop->runInLoop(std::bind(&TcpConnection::sendInLoop, this, buf.c_str(), buf.size()));
         }
     }
+}
+
+
+
+void TcpConnection::setContext(const std::any& context)
+{
+    m_context = context;
+}
+
+const std::any& TcpConnection::getContext() const
+{
+    return m_context;
 }
