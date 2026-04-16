@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <any>
 #include <atomic>
 #include <string>
 #include "noncopyable.h"
@@ -44,6 +45,7 @@ class TcpConnection: noncopyable, public std::enable_shared_from_this< TcpConnec
         size_t      m_highWaterMark;
         Buffer      m_inputBuffer;
         Buffer      m_outputBuffer;
+        std::any    m_context;
 
     public: 
         TcpConnection   (EventLoop *loop, const std::string& name, int sockfd, const InetAddress& localAddr, const InetAddress& peerAddr);
@@ -68,6 +70,10 @@ class TcpConnection: noncopyable, public std::enable_shared_from_this< TcpConnec
         void connectDestroyed   ();
         void setState           (ConnectionState state);
         void send               (const std::string& buf);
+
+
+        void    setContext  (const std::any& context);
+        const std::any&  getContext  () const;
 
     private:
         void handleWrite    ();
