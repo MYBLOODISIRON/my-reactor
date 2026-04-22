@@ -97,7 +97,7 @@ void TcpConnection::setCloseCallback(const CloseCallback& cb)
 
 void TcpConnection::connectEstablished()    // 建立连接
 {
-    setState(Connecting);
+    setState(Connected);
     m_channel->tie(shared_from_this());
     m_channel->enableReading();
     m_connectionCallback(shared_from_this());
