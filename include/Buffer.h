@@ -26,10 +26,10 @@ class Buffer    // 网络缓冲区
         std::string retrieveAsString    (size_t len);
         void        ensureWritableBytes (size_t len);
         void        append              (const char* data, size_t len);
-        const char* beginWrite          () const;
+        char*       beginWrite          () const;
         ssize_t     readFd              (int fd, int* saveErrno);   // 从fd上读取数据
         ssize_t     writeFd             (int fd, int* saveErrno);
     private:
-        const char* begin   () const;
+        char*       begin   () const;
         void        makeSpace   (size_t len);
 };

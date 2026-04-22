@@ -1,6 +1,7 @@
 #include <memory>
 #include "EventLoopThreadPool.h"
 #include "EventLoopThread.h"
+#include "EventLoop.h"
 
 
 EventLoopThreadPool::EventLoopThreadPool(EventLoop *baseLoop, const std::string &nameArg)
@@ -21,7 +22,7 @@ void EventLoopThreadPool::start(const ThreadInitCallback &cb)
         char buffer[buf_len];
         snprintf(buffer, sizeof buffer, "%s%d", m_name.c_str(), i);
         EventLoopThread *t = new EventLoopThread {cb, buffer};
-        m_threads.push_back(std::make_unique<EventLoopThread>(t));
+        m_threads.emplace_back(t);
         m_loops.push_back(t->startLoop());
     }
 

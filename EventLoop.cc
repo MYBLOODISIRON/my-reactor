@@ -30,7 +30,7 @@ int createEventfd()
 
 
 EventLoop::EventLoop()
-:   m_threadId  {CurrentThread::tid()}, 
+:   m_threadId  {static_cast<pid_t>(CurrentThread::tid())}, 
     m_poller    {Poller::newDefaultPoller(this)}, 
     m_wakeupFd  {createEventfd()}, 
     m_wakeupChannel {new Channel {this, m_wakeupFd}}
@@ -64,7 +64,7 @@ void EventLoop::handleRead()
     ssize_t n = read(m_wakeupFd, &one, sizeof(one));
     if(n != 8)
     {
-        LOG_ERROR("EventLoop::handleRead() reads %d bytes instead of 8\n", n);
+        LOG_ERROR("EventLoop::handleRead() reads %ld bytes instead of 8\n", n);
     }
 }
 

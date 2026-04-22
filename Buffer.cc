@@ -26,9 +26,9 @@ size_t Buffer::prependableBytes() const
     return m_readIndex;
 }
 
-const char* Buffer::begin() const
+char* Buffer::begin() const
 {
-    return m_buffer.data();
+    return const_cast<char*>(m_buffer.data());
 }
 
 
@@ -84,14 +84,14 @@ void Buffer::makeSpace(size_t len)
     else
     {
         size_t readable = readableBytes();
-        std::copy(begin() + m_readIndex, begin()+ m_writeIndex, begin() + sm_kCheapPrepend);
+        std::copy(begin() + m_readIndex, begin()+ m_writeIndex, m_buffer.data() + sm_kCheapPrepend);
         m_readIndex = sm_kCheapPrepend;
         m_writeIndex = m_readIndex + readable;
     }
 }
 
 
-const char* Buffer::beginWrite() const
+char* Buffer::beginWrite() const
 {
     return begin() + m_writeIndex;
 }

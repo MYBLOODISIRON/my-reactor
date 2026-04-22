@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include "noncopyable.h"
-class EventLoopThread;
+#include "EventLoopThread.h"
 class EventLoop;
 
 class EventLoopThreadPool: noncopyable

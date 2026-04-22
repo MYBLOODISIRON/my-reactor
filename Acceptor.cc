@@ -11,8 +11,9 @@ static int createNonblocking()
     int sockfd = ::socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
     if(sockfd < 0)
     {
-        LOG_FATAL("%s:%s:%s listen socket create fatal: %d.\n", __FILE__, __FUNCTION__, __LINE__, errno);
+        LOG_FATAL("%s:%s:%d listen socket create fatal: %d.\n", __FILE__, __FUNCTION__, __LINE__, errno);
     }
+    return sockfd;
 }
 
 Acceptor::Acceptor(EventLoop *loop, const InetAddress& listenAddr, bool reusePort)

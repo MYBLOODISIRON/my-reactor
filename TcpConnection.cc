@@ -31,7 +31,7 @@ TcpConnection::TcpConnection(EventLoop* loop, const std::string& name, int sockf
 
 TcpConnection::~TcpConnection()
 {
-    LOG_INFO("TcpConnection::dtor[%d] at fd = %d.\n", m_name.c_str(), m_channel->fd());
+    LOG_INFO("TcpConnection::dtor[%s] at fd = %d.\n", m_name.c_str(), m_channel->fd());
 }
 
 EventLoop* TcpConnection::getLoop() const
@@ -169,7 +169,8 @@ void TcpConnection::handleRead(Timestamp recieveTime)
 
 void TcpConnection::handleClose()
 {
-    LOG_INFO("fd = %d state = %d.\n", m_channel->fd(), m_state);
+    int state = m_state;
+    LOG_INFO("fd = %d state = %d.\n", m_channel->fd(), state);
     setState(Disconnected);
     m_channel->disableAll();
 
