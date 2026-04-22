@@ -113,7 +113,7 @@ int Channel::events() const
 
 int Channel::set_revents(int revent)
 {
-    m_revents = revent;
+    return m_revents = revent;
 }
 
 void Channel::enableReading()

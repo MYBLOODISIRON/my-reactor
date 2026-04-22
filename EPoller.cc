@@ -53,6 +53,7 @@ Timestamp EPoller::poll(int timeoutms, ChannelList *activeChannels)
             LOG_ERROR("EPollPoller::poll() error.\n");
         }
     }
+    return time_now;
 }
 
 void EPoller::fillActiveChannels(int numEvents, ChannelList *activeChannels) const
