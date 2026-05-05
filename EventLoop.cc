@@ -30,14 +30,15 @@ int createEventfd()
 
 
 EventLoop::EventLoop()
-:   m_threadId  {static_cast<pid_t>(CurrentThread::tid())}, 
+:   m_threadId  {CurrentThread::tid()}, 
     m_poller    {Poller::newDefaultPoller(this)}, 
     m_wakeupFd  {createEventfd()}, 
     m_wakeupChannel {new Channel {this, m_wakeupFd}}
 {
     if(loopInThread)
     {
-        LOG_FATAL("Another EventLoop %p is exist in this thread %d\n", loopInThread, m_threadId);
+        LOG_FATAL("Another EventLoop %p is exist in this thread %lu\n", loopInThread,
+                  static_cast<unsigned long>(m_threadId));
     }
     else
     {
@@ -177,7 +178,7 @@ void EventLoop::doPendingFunctor()
 
 bool EventLoop::isInLoopThread() const
 {
-    return m_threadId == CurrentThread::tid();
+    return pthread_equal(m_threadId, CurrentThread::tid()) != 0;
 }
 
 Timestamp EventLoop::pollReturnTime() const

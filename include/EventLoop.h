@@ -1,4 +1,5 @@
 #pragma once
+#include <pthread.h>
 #include <vector>
 #include <functional>
 #include <atomic>
@@ -19,7 +20,7 @@ class EventLoop
 
         std::atomic_bool    m_looping   {false};
         std::atomic_bool    m_quit      {false};     // 标志推出循环
-        const   pid_t       m_threadId;     // loop所在的线程
+        const   pthread_t   m_threadId;     // loop所在的线程（与 CurrentThread::tid 一致）
         Timestamp           m_pollReturnTime;
         std::unique_ptr<Poller> m_poller;
 
