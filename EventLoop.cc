@@ -131,7 +131,7 @@ void EventLoop::queueInLoop(Functor cb)
 
 void EventLoop::wakeup()
 {
-    uint64_t one {0};
+    uint64_t one {1};
     ssize_t n {write(m_wakeupFd, &one, 8)};
     if(n != 8)
     {
